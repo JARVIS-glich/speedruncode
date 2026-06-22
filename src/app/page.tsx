@@ -127,7 +127,7 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {TRACKS.map((track, i) => (
-              <Link key={track.slug} href={`/tracks/${track.slug}`}
+              <Link key={track.slug} href="/tracks"
                 className="animate-fade-up card-luxury rounded-2xl p-6 group flex flex-col gap-10"
                 style={{ animationDelay: `${i*0.06}s` }}>
                 {/* Top accent dot */}
