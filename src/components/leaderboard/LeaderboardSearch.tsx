@@ -98,7 +98,7 @@ export function LeaderboardSearch({
                     {user.xp.toLocaleString()}
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums">
-                    {user.streak_count > 0 ? `🔥 ${user.streak_count}` : "—"}
+                    {user.streak_count > 0 ? `${user.streak_count}d` : "—"}
                   </td>
                 </tr>
               ))

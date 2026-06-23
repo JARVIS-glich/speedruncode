@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { recordDailyVisit } from "@/lib/actions/auth";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { getUserRank, getLeaderboard } from "@/lib/queries/leaderboard";
@@ -12,7 +13,10 @@ export default async function DashboardPage() {
   await recordDailyVisit();
 
   const profile = await getCurrentProfile();
-  if (!profile) return null;
+  if (!profile) {
+    redirect("/login");
+    return null;
+  }
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
