@@ -127,21 +127,18 @@ export default async function HomePage() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {TRACKS.map((track, i) => (
-              <Link key={track.slug} href="/tracks"
-                className="animate-fade-up card-luxury rounded-2xl p-6 group flex flex-col gap-10"
+              <div key={track.slug}
+                className="animate-fade-up card-luxury rounded-2xl p-6 flex flex-col gap-10"
                 style={{ animationDelay: `${i*0.06}s` }}>
-                {/* Top accent dot */}
                 <div className="w-8 h-8 rounded-full flex items-center justify-center"
                   style={{ background: track.accent }}>
                   <div className="w-2 h-2 rounded-full bg-white/60" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm mb-1.5 group-hover:text-accent transition-colors duration-300">
-                    {track.title}
-                  </h3>
+                  <h3 className="font-bold text-sm mb-1.5">{track.title}</h3>
                   <p className="text-xs leading-relaxed" style={{ color: "var(--muted)" }}>{track.desc}</p>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>

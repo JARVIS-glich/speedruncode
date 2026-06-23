@@ -22,9 +22,9 @@ export async function getLessonBySlug(
     .select("*")
     .eq("track_id", trackId)
     .eq("slug", lessonSlug)
-    .single();
+    .maybeSingle();
 
-  return data;
+  return data ?? null;
 }
 
 export async function getLessonsWithCompletion(
@@ -63,9 +63,9 @@ export async function getTrackBySlug(slug: string) {
     .from("tracks")
     .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
-  return data;
+  return data ?? null;
 }
 
 export async function isLessonCompleted(
