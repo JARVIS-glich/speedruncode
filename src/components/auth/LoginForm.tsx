@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { getEmailByUsername } from "@/lib/actions/auth";
+import { getEmailByUsername, signUpUser } from "@/lib/actions/auth";
 
 type Mode = "signin" | "signup";
 
@@ -13,35 +13,24 @@ const inputClass =
 export function LoginForm() {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("signin");
-
-  // sign-in fields
-  const [identifier, setIdentifier] = useState(""); // email or username
+  const [identifier, setIdentifier] = useState("");
   const [signInPassword, setSignInPassword] = useState("");
-
-  // sign-up fields
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  function switchMode(m: Mode) {
-    setMode(m);
-    setError(null);
-  }
+  function switchMode(m: Mode) { setMode(m); setError(null); }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-
-    /* ── SIGN UP ─────────────────────────────────────── */
+    /* ── SIGN UP — runs through server action to bypass RLS ── */
     if (mode === "signup") {
       const trimmedUsername = username.trim().toLowerCase();
-      const trimmedEmail = email.trim().toLowerCase();
 
       if (trimmedUsername.length < 3) {
         setError("Username must be at least 3 characters.");
@@ -59,46 +48,27 @@ export function LoginForm() {
         return;
       }
 
-      // Check username availability
-      const { data: existing } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("username", trimmedUsername)
-        .maybeSingle();
+      const result = await signUpUser(email.trim(), trimmedUsername, signUpPassword);
 
-      if (existing) {
-        setError("That username is already taken.");
+      if (!result.success) {
+        setError(result.error ?? "Sign up failed. Please try again.");
         setLoading(false);
         return;
       }
 
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email: trimmedEmail,
+      // Sign in immediately after successful signup
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
         password: signUpPassword,
-        options: { data: { username: trimmedUsername } },
       });
 
-      if (signUpError) {
-        if (signUpError.message.toLowerCase().includes("already registered")) {
-          setError("An account with that email already exists. Try signing in.");
-        } else if (signUpError.message.toLowerCase().includes("invalid api") || signUpError.message.toLowerCase().includes("api key")) {
-          setError("Server configuration error. Please contact support.");
-        } else {
-          setError(signUpError.message);
-        }
+      if (signInError) {
+        // Account created but auto-sign-in failed — ask them to sign in manually
+        setError("Account created! Please sign in.");
+        setMode("signin");
         setLoading(false);
         return;
-      }
-
-      if (data.user) {
-        await supabase
-          .from("profiles")
-          .update({
-            username: trimmedUsername,
-            email: trimmedEmail,
-            onboarding_completed: true,
-          })
-          .eq("id", data.user.id);
       }
 
       router.push("/dashboard");
@@ -106,11 +76,11 @@ export function LoginForm() {
       return;
     }
 
-    /* ── SIGN IN ─────────────────────────────────────── */
+    /* ── SIGN IN ── */
+    const supabase = createClient();
     const raw = identifier.trim();
     let resolvedEmail = raw;
 
-    // If it doesn't look like an email, treat it as a username
     if (!raw.includes("@")) {
       const found = await getEmailByUsername(raw);
       if (!found) {
@@ -138,14 +108,11 @@ export function LoginForm() {
 
   return (
     <div>
-      {/* Mode toggle */}
       <div className="mb-8 flex rounded-2xl border border-card-border p-1.5 gap-1">
         {(["signin", "signup"] as Mode[]).map((m) => (
           <button key={m} type="button" onClick={() => switchMode(m)}
             className={`flex-1 rounded-xl py-2.5 text-sm font-semibold transition-all ${
-              mode === m
-                ? "btn-primary"
-                : "text-muted hover:text-foreground"
+              mode === m ? "btn-primary" : "text-muted hover:text-foreground"
             }`}>
             {m === "signin" ? "Sign in" : "Create account"}
           </button>
@@ -153,82 +120,42 @@ export function LoginForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
-
         {mode === "signin" ? (
           <>
             <div>
-              <label className="block text-sm font-medium mb-2 text-muted">
-                Email or username
-              </label>
-              <input
-                type="text"
-                required
-                value={identifier}
+              <label className="block text-sm font-medium mb-2 text-muted">Email or username</label>
+              <input type="text" required value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 placeholder="you@example.com or your_username"
-                autoComplete="username"
-                className={inputClass}
-              />
+                autoComplete="username" className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2 text-muted">
-                Password
-              </label>
-              <input
-                type="password"
-                required
-                value={signInPassword}
+              <label className="block text-sm font-medium mb-2 text-muted">Password</label>
+              <input type="password" required value={signInPassword}
                 onChange={(e) => setSignInPassword(e.target.value)}
-                placeholder="Your password"
-                autoComplete="current-password"
-                className={inputClass}
-              />
+                placeholder="Your password" autoComplete="current-password" className={inputClass} />
             </div>
           </>
         ) : (
           <>
             <div>
-              <label className="block text-sm font-medium mb-2 text-muted">
-                Email address
-              </label>
-              <input
-                type="email"
-                required
-                value={email}
+              <label className="block text-sm font-medium mb-2 text-muted">Email address</label>
+              <input type="email" required value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                autoComplete="email"
-                className={inputClass}
-              />
+                placeholder="you@example.com" autoComplete="email" className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2 text-muted">
-                Username
-              </label>
-              <input
-                type="text"
-                required
-                value={username}
+              <label className="block text-sm font-medium mb-2 text-muted">Username</label>
+              <input type="text" required value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="your_username"
-                autoComplete="username"
-                className={inputClass}
-              />
+                placeholder="your_username" autoComplete="username" className={inputClass} />
               <p className="mt-1.5 text-xs text-muted">Lowercase letters, numbers, underscores only</p>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-2 text-muted">
-                Password
-              </label>
-              <input
-                type="password"
-                required
-                value={signUpPassword}
+              <label className="block text-sm font-medium mb-2 text-muted">Password</label>
+              <input type="password" required value={signUpPassword}
                 onChange={(e) => setSignUpPassword(e.target.value)}
-                placeholder="At least 6 characters"
-                autoComplete="new-password"
-                className={inputClass}
-              />
+                placeholder="At least 6 characters" autoComplete="new-password" className={inputClass} />
             </div>
           </>
         )}
