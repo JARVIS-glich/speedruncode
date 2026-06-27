@@ -8,7 +8,6 @@ import {
   isLessonCompleted,
 } from "@/lib/queries/lessons";
 import { LessonClient } from "@/components/lessons/LessonClient";
-import { LessonQAClient } from "@/components/lessons/LessonQAClient";
 
 interface LessonPageProps {
   params: Promise<{ trackSlug: string; lessonSlug: string }>;
@@ -124,11 +123,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
         </div>
 
         {/* ── RIGHT: sidebar ── */}
-        <div className="w-full xl:w-80 shrink-0 space-y-5">
-          <LessonQAClient
-            lessonTitle={lesson.title}
-            lessonSummary={lesson.summary ?? ""}
-          />
+        <div className="w-full xl:w-72 shrink-0 space-y-5">
           <div className="rounded-3xl border border-card-border bg-card p-6">
             <h3 className="text-xs font-bold uppercase tracking-widest text-muted mb-5">
               Track Progress
