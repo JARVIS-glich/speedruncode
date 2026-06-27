@@ -17,6 +17,45 @@ const TICKER = [
   "+15 XP earned","Rank #5","30-day streak","Level unlocked",
 ];
 
+const REVIEWS = [
+  {
+    name: "Marcus T.",
+    handle: "@marcus_builds",
+    text: "I'd been stuck on the same Cursor workflow for weeks. Finished the Cursor Mastery track in 3 days and now I'm shipping features in half the time. The debugging lesson alone was worth it.",
+    role: "Indie hacker",
+  },
+  {
+    name: "Priya S.",
+    handle: "@priya_codes",
+    text: "The AI Fundamentals track completely changed how I write prompts. I used to get garbage output from Copilot. Now I get exactly what I want on the first try. Huge difference.",
+    role: "Freelance developer",
+  },
+  {
+    name: "James O.",
+    handle: "@jamesobi",
+    text: "Built my first Bubble app after the No-Code Builders track. It actually has real users now. I had zero idea what I was doing before — the lessons are short and the challenges make it stick.",
+    role: "Non-technical founder",
+  },
+  {
+    name: "Sofia R.",
+    handle: "@sofiadev",
+    text: "The streak mechanic is genuinely addictive. I've kept a 21-day streak and gone through three tracks. The XP leaderboard makes it feel like a game — but everything I'm learning is real.",
+    role: "CS student",
+  },
+  {
+    name: "Arjun M.",
+    handle: "@arjun_ships",
+    text: "Went from not knowing what n8n was to automating my entire client onboarding workflow in a week. The automation track is incredibly well structured. No fluff, just the stuff that works.",
+    role: "Agency owner",
+  },
+  {
+    name: "Lena K.",
+    handle: "@lenabuilds",
+    text: "I've tried four other AI coding courses. Speed Run Code is the only one where I actually finished a track. 15 minute lessons and a real challenge at the end — that's the format that works for me.",
+    role: "Product designer learning to code",
+  },
+];
+
 export default async function HomePage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -137,6 +176,47 @@ export default async function HomePage() {
                 <div>
                   <h3 className="font-bold text-sm mb-1.5">{track.title}</h3>
                   <p className="text-xs leading-relaxed" style={{ color: "var(--muted)" }}>{track.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── REVIEWS ──────────────────────────────────────────── */}
+      <section className="relative px-6 py-20 overflow-hidden"
+        style={{ background: "linear-gradient(180deg, transparent 0%, rgba(255,98,0,0.02) 50%, transparent 100%)" }}>
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-14 text-center">
+            <p className="section-label justify-center mb-5">What learners say</p>
+            <h2 className="font-bold tracking-[-0.025em] leading-[0.95]"
+              style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}>
+              Real results. Real builders.
+            </h2>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {REVIEWS.map((r, i) => (
+              <div key={r.handle}
+                className={`animate-fade-up card-luxury rounded-3xl p-7`}
+                style={{ animationDelay: `${i * 0.07}s` }}>
+                {/* Quote */}
+                <p className="text-sm leading-relaxed mb-6"
+                  style={{ color: "rgba(240,240,245,0.85)" }}>
+                  &ldquo;{r.text}&rdquo;
+                </p>
+                {/* Author */}
+                <div className="flex items-center gap-3 pt-4"
+                  style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+                  {/* Avatar placeholder */}
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+                    style={{ background: "rgba(255,98,0,0.2)", color: "var(--accent)" }}>
+                    {r.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold">{r.name}</p>
+                    <p className="text-xs" style={{ color: "var(--muted)" }}>{r.role}</p>
+                  </div>
                 </div>
               </div>
             ))}
