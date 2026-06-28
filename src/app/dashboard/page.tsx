@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { FeedbackWidget } from "@/components/dashboard/FeedbackWidget";
 import { recordDailyVisit } from "@/lib/actions/auth";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { getUserRank, getLeaderboard } from "@/lib/queries/leaderboard";
@@ -163,6 +164,11 @@ export default async function DashboardPage() {
           )}
         </ul>
       </div>
+      {/* Feedback */}
+      <div className="mt-10">
+        <FeedbackWidget />
+      </div>
+
     </div>
   );
 }
