@@ -84,10 +84,11 @@ export default async function LessonPage({ params }: LessonPageProps) {
             style={{ paddingTop: "56.25%" }}>
             <iframe
               className="absolute inset-0 h-full w-full"
-              src={`https://www.youtube.com/embed/${lesson.youtube_video_id}?rel=0&modestbranding=1`}
+              src={`https://www.youtube-nocookie.com/embed/${lesson.youtube_video_id}?rel=0&modestbranding=1&enablejsapi=1`}
               title={lesson.title}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
               allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
             />
           </div>
 
