@@ -29,11 +29,17 @@ export default async function DashboardPage() {
     getLeaderboard(5),
   ]);
 
+  // Fetch all tracks' lessons in parallel instead of sequentially
+  const allTrackLessons = await Promise.all(
+    tracks.map((track) => getLessonsWithCompletion(track.id, user?.id ?? null))
+  );
+
   let continueHref: string | null = null;
   let continueLabel: string | null = null;
   let continueTrack: string | null = null;
-  for (const track of tracks) {
-    const lessons = await getLessonsWithCompletion(track.id, user?.id ?? null);
+  for (let i = 0; i < tracks.length; i++) {
+    const track = tracks[i];
+    const lessons = allTrackLessons[i];
     const next = lessons.find((l) => !l.completed);
     if (next) {
       continueHref = `/tracks/${track.slug}/${next.slug}`;
