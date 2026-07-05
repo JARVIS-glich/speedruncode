@@ -6,7 +6,9 @@ import {
   getLessonBySlug,
   getLessonsWithCompletion,
   isLessonCompleted,
+  getQuizQuestions,
 } from "@/lib/queries/lessons";
+import { LessonQuizWrapper } from "@/components/lessons/LessonQuizWrapper";
 import { LessonClient } from "@/components/lessons/LessonClient";
 
 interface LessonPageProps {
@@ -31,15 +33,18 @@ export default async function LessonPage({ params }: LessonPageProps) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const [allLessons, completed] = await Promise.all([
+  const [allLessons, completed, quizQuestions] = await Promise.all([
     getLessonsWithCompletion(track.id, user?.id ?? null),
     user ? isLessonCompleted(lesson.id, user.id) : Promise.resolve(false),
+    getQuizQuestions(lesson.id),
   ]);
 
   const currentIndex = allLessons.findIndex((l) => l.id === lesson.id);
   const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
   const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
   const levelColor = LEVEL_COLORS[lesson.level] ?? "text-muted bg-card border-card-border";
+
+  const hasQuiz = quizQuestions.length > 0;
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-10">
@@ -72,6 +77,11 @@ export default async function LessonPage({ params }: LessonPageProps) {
                   ✓ Completed
                 </span>
               )}
+              {hasQuiz && !completed && (
+                <span className="rounded-full border border-accent/20 bg-accent/10 px-3.5 py-1 text-xs font-bold text-accent">
+                  🧠 Quiz required
+                </span>
+              )}
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold leading-tight">{lesson.title}</h1>
             {lesson.description && (
@@ -100,27 +110,43 @@ export default async function LessonPage({ params }: LessonPageProps) {
             </div>
           )}
 
-          {/* Challenge */}
-          <div className="rounded-3xl border border-accent/25 p-8"
-            style={{ background: "rgba(249,115,22,0.04)" }}>
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="font-bold text-lg">Your Challenge</h2>
-              <span className="text-sm font-bold text-accent">+{lesson.xp_value} XP</span>
+          {/* Quiz + Challenge + Mark Complete */}
+          {hasQuiz ? (
+            <LessonQuizWrapper
+              questions={quizQuestions}
+              lessonId={lesson.id}
+              xpValue={lesson.xp_value}
+              trackSlug={trackSlug}
+              lessonSlug={lessonSlug}
+              isCompleted={completed}
+              isLoggedIn={!!user}
+              prevSlug={prevLesson?.slug ?? null}
+              nextSlug={nextLesson?.slug ?? null}
+              challengePrompt={lesson.challenge_prompt}
+            />
+          ) : (
+            /* No quiz for this lesson — show challenge + complete directly */
+            <div className="space-y-6">
+              <div className="rounded-3xl border border-accent/25 p-8"
+                style={{ background: "rgba(249,115,22,0.04)" }}>
+                <div className="flex items-center justify-between mb-5">
+                  <h2 className="font-bold text-lg">Your Challenge</h2>
+                  <span className="text-sm font-bold text-accent">+{lesson.xp_value} XP</span>
+                </div>
+                <p className="text-muted leading-[1.9]">{lesson.challenge_prompt}</p>
+              </div>
+              <LessonClient
+                lessonId={lesson.id}
+                xpValue={lesson.xp_value}
+                trackSlug={trackSlug}
+                lessonSlug={lessonSlug}
+                isCompleted={completed}
+                isLoggedIn={!!user}
+                prevSlug={prevLesson?.slug ?? null}
+                nextSlug={nextLesson?.slug ?? null}
+              />
             </div>
-            <p className="text-muted leading-[1.9]">{lesson.challenge_prompt}</p>
-          </div>
-
-          {/* Mark complete + nav */}
-          <LessonClient
-            lessonId={lesson.id}
-            xpValue={lesson.xp_value}
-            trackSlug={trackSlug}
-            lessonSlug={lessonSlug}
-            isCompleted={completed}
-            isLoggedIn={!!user}
-            prevSlug={prevLesson?.slug ?? null}
-            nextSlug={nextLesson?.slug ?? null}
-          />
+          )}
         </div>
 
         {/* ── RIGHT: sidebar ── */}

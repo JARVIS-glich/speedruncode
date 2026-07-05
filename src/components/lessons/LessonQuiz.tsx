@@ -6,14 +6,15 @@ import type { QuizQuestion } from "@/types/database";
 interface LessonQuizProps {
   questions: QuizQuestion[];
   onPass: () => void; // called when user scores ≥ 60%
+  isCompleted?: boolean; // already passed — show in passed state
 }
 
 type Phase = "quiz" | "result";
 
-export function LessonQuiz({ questions, onPass }: LessonQuizProps) {
+export function LessonQuiz({ questions, onPass, isCompleted = false }: LessonQuizProps) {
   const [answers, setAnswers] = useState<Record<string, number>>({});
-  const [phase, setPhase] = useState<Phase>("quiz");
-  const [score, setScore] = useState(0);
+  const [phase, setPhase] = useState<Phase>(isCompleted ? "result" : "quiz");
+  const [score, setScore] = useState(isCompleted ? 100 : 0);
 
   const total = questions.length;
   const allAnswered = Object.keys(answers).length === total;
