@@ -4,7 +4,6 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
-  // If env vars are missing, skip all auth logic and just serve the page
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
     return supabaseResponse;
   }
@@ -30,12 +29,11 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  let user = null;
+  let userId: string | null = null;
   try {
     const { data } = await supabase.auth.getUser();
-    user = data.user;
+    userId = data.user?.id ?? null;
   } catch {
-    // Auth failed — treat as logged out, don't crash
     return supabaseResponse;
   }
 
@@ -45,27 +43,39 @@ export async function updateSession(request: NextRequest) {
     pathname === "/" ||
     pathname === "/leaderboard" ||
     pathname.startsWith("/users/") ||
-    pathname.startsWith("/tracks");
+    pathname.startsWith("/tracks") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/api");
 
-  if (!user && !isAuthRoute && !isPublicRoute) {
+  // Not logged in → redirect to login
+  if (!userId && !isAuthRoute && !isPublicRoute) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  if (user && pathname === "/login") {
+  // Already logged in → skip login page
+  if (userId && pathname === "/login") {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";
     return NextResponse.redirect(url);
   }
 
-  if (user && !isAuthRoute && !isPublicRoute && pathname !== "/onboarding") {
+  // Onboarding check — only on protected pages that aren't /dashboard or /onboarding
+  // (dashboard does its own profile fetch)
+  if (
+    userId &&
+    !isAuthRoute &&
+    !isPublicRoute &&
+    pathname !== "/onboarding" &&
+    pathname !== "/dashboard"
+  ) {
     try {
       const { data: profile } = await supabase
         .from("profiles")
         .select("onboarding_completed")
-        .eq("id", user.id)
-        .single();
+        .eq("id", userId)
+        .maybeSingle();
 
       if (profile && !profile.onboarding_completed) {
         const url = request.nextUrl.clone();
@@ -73,17 +83,18 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(url);
       }
     } catch {
-      // DB query failed — continue without redirect
+      // DB error — continue
     }
   }
 
-  if (user && pathname === "/onboarding") {
+  // If already completed onboarding, skip /onboarding
+  if (userId && pathname === "/onboarding") {
     try {
       const { data: profile } = await supabase
         .from("profiles")
         .select("onboarding_completed")
-        .eq("id", user.id)
-        .single();
+        .eq("id", userId)
+        .maybeSingle();
 
       if (profile?.onboarding_completed) {
         const url = request.nextUrl.clone();
@@ -91,7 +102,7 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(url);
       }
     } catch {
-      // DB query failed — continue
+      // continue
     }
   }
 

@@ -1,29 +1,52 @@
+"use client";
+
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import { signOut } from "@/lib/actions/auth";
 
-export async function Navbar() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+export function Navbar() {
+  const [username, setUsername] = useState<string | null | undefined>(undefined);
 
-  let username: string | null = null;
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("username, onboarding_completed")
-      .eq("id", user.id)
-      .single();
-    if (profile?.onboarding_completed) username = profile.username;
-  }
+  useEffect(() => {
+    const supabase = createClient();
+
+    async function loadUser() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setUsername(null); return; }
+
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("username, onboarding_completed")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      setUsername(profile?.onboarding_completed ? (profile.username ?? null) : null);
+    }
+
+    loadUser();
+
+    // Keep in sync on auth state changes (login/logout)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
+      loadUser();
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // undefined = still loading (show skeleton)
+  const isLoading = username === undefined;
 
   return (
-    <header className="sticky top-0 z-50 px-6"
+    <header
+      className="sticky top-0 z-50 px-6"
       style={{
         background: "rgba(3,3,10,0.7)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
         borderBottom: "1px solid rgba(255,255,255,0.05)",
-      }}>
+      }}
+    >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 font-bold text-base tracking-tight group">
           <span className="text-xl text-accent group-hover:animate-float inline-block transition-transform">⚡</span>
@@ -37,20 +60,20 @@ export async function Navbar() {
           <Link href="/leaderboard" className="text-muted hover:text-foreground transition-colors duration-200 font-medium">
             Leaderboard
           </Link>
-          {user ? (
+
+          {isLoading ? (
+            /* Skeleton so nav doesn't jump */
+            <div className="h-4 w-20 rounded bg-card-border animate-pulse" />
+          ) : username ? (
             <>
               <Link href="/dashboard" className="text-muted hover:text-foreground transition-colors duration-200 font-medium">
                 Dashboard
               </Link>
-              {username && (
-                <Link href={`/users/${username}`}
-                  className="text-muted hover:text-foreground transition-colors duration-200 font-medium">
-                  @{username}
-                </Link>
-              )}
+              <Link href={`/users/${username}`} className="text-muted hover:text-foreground transition-colors duration-200 font-medium">
+                @{username}
+              </Link>
               <form action={signOut}>
-                <button type="submit"
-                  className="text-muted hover:text-foreground transition-colors duration-200 font-medium">
+                <button type="submit" className="text-muted hover:text-foreground transition-colors duration-200 font-medium">
                   Sign out
                 </button>
               </form>

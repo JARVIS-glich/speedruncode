@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FeedbackWidget } from "@/components/dashboard/FeedbackWidget";
-import { recordDailyVisit } from "@/lib/actions/auth";
 import { StatCard } from "@/components/dashboard/StatCard";
 import { getUserRank, getLeaderboard } from "@/lib/queries/leaderboard";
 import { getCompletedLessonsCount, getCurrentProfile } from "@/lib/queries/profile";
@@ -11,8 +10,6 @@ import { todayUtc } from "@/lib/streak";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function DashboardPage() {
-  await recordDailyVisit();
-
   const profile = await getCurrentProfile();
   if (!profile) {
     redirect("/login");
