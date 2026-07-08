@@ -15,73 +15,69 @@ export function Navbar() {
     async function loadUser() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setUsername(null); return; }
-
       const { data: profile } = await supabase
         .from("profiles")
         .select("username, onboarding_completed")
         .eq("id", user.id)
         .maybeSingle();
-
       setUsername(profile?.onboarding_completed ? (profile.username ?? null) : null);
     }
 
     loadUser();
-
-    // Keep in sync on auth state changes (login/logout)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => {
-      loadUser();
-    });
-
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(() => loadUser());
     return () => subscription.unsubscribe();
   }, []);
 
-  // undefined = still loading (show skeleton)
   const isLoading = username === undefined;
 
   return (
     <header
       className="sticky top-0 z-50 px-6"
       style={{
-        background: "rgba(13,2,8,0.85)",
-        backdropFilter: "blur(20px)",
-        WebkitBackdropFilter: "blur(20px)",
-        borderBottom: "1px solid rgba(0,255,65,0.2)",
-        boxShadow: "0 2px 30px rgba(0,255,65,0.08)",
+        background: "rgba(0,0,0,0.92)",
+        backdropFilter: "blur(12px)",
+        borderBottom: "1px solid rgba(0,255,65,0.15)",
       }}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5 font-bold text-base tracking-widest group uppercase">
-          <span className="text-xl text-accent group-hover:animate-float inline-block transition-transform neon-text">⚡</span>
-          <span className="text-accent neon-text tracking-widest">SPEED_RUN_CODE</span>
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between">
+
+        <Link href="/" className="font-bold text-sm tracking-widest uppercase neon-text hover:neon-glow transition-all">
+          ⚡ SPEED_RUN_CODE
         </Link>
 
-        <nav className="flex items-center gap-5 text-xs font-bold uppercase tracking-widest">
-          <Link href="/tracks" className="text-muted hover:text-accent hover:shadow-[0_0_8px_var(--accent)] transition-all duration-200">
-            [TRACKS]
+        <nav className="flex items-center gap-6 text-xs font-bold uppercase tracking-widest">
+          <Link href="/tracks" className="transition-all" style={{ color: "var(--muted)" }}
+            onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
+            onMouseLeave={e => (e.currentTarget.style.color = "var(--muted)")}>
+            TRACKS
           </Link>
-          <Link href="/leaderboard" className="text-muted hover:text-accent hover:shadow-[0_0_8px_var(--accent)] transition-all duration-200">
-            [RANKINGS]
+          <Link href="/leaderboard" className="transition-all" style={{ color: "var(--muted)" }}
+            onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
+            onMouseLeave={e => (e.currentTarget.style.color = "var(--muted)")}>
+            RANKINGS
           </Link>
 
           {isLoading ? (
-            <div className="h-4 w-24 rounded bg-card-border animate-pulse" />
+            <div className="h-3 w-20 rounded animate-pulse" style={{ background: "var(--card-border)" }} />
           ) : username ? (
             <>
-              <Link href="/dashboard" className="text-muted hover:text-accent hover:shadow-[0_0_8px_var(--accent)] transition-all duration-200">
-                [DASHBOARD]
+              <Link href="/dashboard" className="transition-all" style={{ color: "var(--muted)" }}
+                onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
+                onMouseLeave={e => (e.currentTarget.style.color = "var(--muted)")}>
+                DASHBOARD
               </Link>
-              <Link href={`/users/${username}`} className="text-accent neon-text">
-                &gt;{username}
-              </Link>
+              <span className="neon-text">&gt;{username}</span>
               <form action={signOut}>
-                <button type="submit" className="text-muted hover:text-red-400 transition-all duration-200">
-                  [EXIT]
+                <button type="submit" className="transition-all text-xs font-bold uppercase tracking-widest" style={{ color: "var(--muted)" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "#ff4444")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "var(--muted)")}>
+                  EXIT
                 </button>
               </form>
             </>
           ) : (
-            <Link href="/login" className="btn-primary rounded-lg px-4 py-2 text-xs inline-block">
-              ENTER_SYSTEM
+            <Link href="/login" className="btn-matrix rounded px-4 py-1.5 text-xs inline-block">
+              ENTER
             </Link>
           )}
           <ThemeToggle />

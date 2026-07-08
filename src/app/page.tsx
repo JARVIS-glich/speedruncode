@@ -2,58 +2,29 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 const TRACKS = [
-  { slug: "ai-fundamentals",  title: "AI Fundamentals",    desc: "Cursor · Copilot · Prompting · Debugging",    accent: "rgba(99,179,237,0.18)" },
-  { slug: "cursor-mastery",   title: "Cursor Mastery",      desc: "Composer · Agent Mode · Context Engineering", accent: "rgba(255,98,0,0.18)" },
-  { slug: "ship-with-ai",     title: "Ship with AI",        desc: "Lovable · Replit · v0 · Bolt",                accent: "rgba(167,139,250,0.18)" },
-  { slug: "no-code-builders", title: "No-Code Builders",    desc: "Bubble · Webflow · FlutterFlow · Glide",      accent: "rgba(52,211,153,0.18)" },
-  { slug: "backend-database", title: "Backend & Database",  desc: "Airtable · Xano · Supabase · Firebase",       accent: "rgba(56,189,248,0.18)" },
-  { slug: "automation",       title: "Automation",          desc: "Zapier · Make · n8n",                         accent: "rgba(251,191,36,0.18)" },
-  { slug: "ai-agents-money",  title: "AI Agents & Revenue", desc: "Voiceflow · Lindy · Stripe · Gumloop",        accent: "rgba(244,114,182,0.18)" },
+  { slug: "ai-fundamentals",  label: "01", title: "AI_FUNDAMENTALS",   desc: "Cursor · Copilot · Prompting · Debugging"        },
+  { slug: "cursor-mastery",   label: "02", title: "CURSOR_MASTERY",     desc: "Composer · Agent Mode · Context Engineering"     },
+  { slug: "ship-with-ai",     label: "03", title: "SHIP_WITH_AI",       desc: "Lovable · Replit · v0 · Bolt"                    },
+  { slug: "no-code-builders", label: "04", title: "NO_CODE_BUILDERS",   desc: "Bubble · Webflow · FlutterFlow · Glide"          },
+  { slug: "backend-database", label: "05", title: "BACKEND_DATABASE",   desc: "Airtable · Xano · Supabase · Firebase"          },
+  { slug: "automation",       label: "06", title: "AUTOMATION",          desc: "Zapier · Make · n8n"                             },
+  { slug: "ai-agents-money",  label: "07", title: "AI_AGENTS_REVENUE",  desc: "Voiceflow · Lindy · Stripe · Gumloop"            },
 ];
 
-const TICKER = [
-  "+10 XP earned","7-day streak","Lesson complete","Rank #12",
-  "+20 XP earned","14-day streak","Track complete","Challenge done",
-  "+15 XP earned","Rank #5","30-day streak","Level unlocked",
+const STEPS = [
+  { n: "01", title: "WATCH",       desc: "Under 15 minutes. Handpicked for speed — no filler." },
+  { n: "02", title: "READ_NOTES",  desc: "Written summary below every video. Reinforce the key ideas." },
+  { n: "03", title: "TAKE_QUIZ",   desc: "Answer 3–5 questions. Score 60%+ to unlock the next step." },
+  { n: "04", title: "DO_CHALLENGE",desc: "Build something real. XP + streak only unlock when you finish." },
 ];
 
 const REVIEWS = [
-  {
-    name: "Marcus T.",
-    handle: "@marcus_builds",
-    text: "I'd been stuck on the same Cursor workflow for weeks. Finished the Cursor Mastery track in 3 days and now I'm shipping features in half the time. The debugging lesson alone was worth it.",
-    role: "Indie hacker",
-  },
-  {
-    name: "Priya S.",
-    handle: "@priya_codes",
-    text: "The AI Fundamentals track completely changed how I write prompts. I used to get garbage output from Copilot. Now I get exactly what I want on the first try. Huge difference.",
-    role: "Freelance developer",
-  },
-  {
-    name: "James O.",
-    handle: "@jamesobi",
-    text: "Built my first Bubble app after the No-Code Builders track. It actually has real users now. I had zero idea what I was doing before — the lessons are short and the challenges make it stick.",
-    role: "Non-technical founder",
-  },
-  {
-    name: "Sofia R.",
-    handle: "@sofiadev",
-    text: "The streak mechanic is genuinely addictive. I've kept a 21-day streak and gone through three tracks. The XP leaderboard makes it feel like a game — but everything I'm learning is real.",
-    role: "CS student",
-  },
-  {
-    name: "Arjun M.",
-    handle: "@arjun_ships",
-    text: "Went from not knowing what n8n was to automating my entire client onboarding workflow in a week. The automation track is incredibly well structured. No fluff, just the stuff that works.",
-    role: "Agency owner",
-  },
-  {
-    name: "Lena K.",
-    handle: "@lenabuilds",
-    text: "I've tried four other AI coding courses. Speed Run Code is the only one where I actually finished a track. 15 minute lessons and a real challenge at the end — that's the format that works for me.",
-    role: "Product designer learning to code",
-  },
+  { name: "Marcus T.",  role: "Indie hacker",               text: "Finished Cursor Mastery in 3 days. Now shipping features in half the time. The debugging lesson alone was worth it." },
+  { name: "Priya S.",   role: "Freelance developer",        text: "The AI Fundamentals track changed how I write prompts. I used to get garbage output. Now I get what I want first try." },
+  { name: "James O.",   role: "Non-technical founder",      text: "Built my first Bubble app after the No-Code track. It has real users now. Lessons are short, challenges make it stick." },
+  { name: "Sofia R.",   role: "CS student",                 text: "Kept a 21-day streak across three tracks. The XP leaderboard makes it feel like a game — but everything is real skills." },
+  { name: "Arjun M.",   role: "Agency owner",               text: "Went from not knowing n8n to automating my entire client onboarding in a week. Automation track is incredibly well structured." },
+  { name: "Lena K.",    role: "Designer learning to code",  text: "I've tried four other AI coding courses. This is the only one I finished. 15 min lessons + real challenge = the format that works." },
 ];
 
 export default async function HomePage() {
@@ -61,253 +32,191 @@ export default async function HomePage() {
   const { data: { user } } = await supabase.auth.getUser();
 
   return (
-    <div className="overflow-x-hidden">
+    <div className="min-h-screen" style={{ background: "#000" }}>
 
       {/* ── HERO ──────────────────────────────────────────────── */}
-      <section className="relative pt-20 pb-16 flex flex-col items-center text-center overflow-hidden px-6">
+      <section className="px-6 pt-24 pb-20">
+        <div className="mx-auto max-w-4xl">
 
-        {/* Background: deep purple-tinted glow, no circles */}
-        <div className="glow-blob"
-          style={{
-            width: "80vw", height: "60vh",
-            top: "0%", left: "50%",
-            transform: "translateX(-50%)",
-            background: "radial-gradient(ellipse, rgba(255,98,0,0.22) 0%, rgba(120,40,200,0.08) 45%, transparent 70%)",
-          }} />
-        <div className="glow-blob"
-          style={{
-            width: "40vw", height: "40vh",
-            bottom: "10%", right: "-5%",
-            background: "radial-gradient(ellipse, rgba(100,60,255,0.12) 0%, transparent 65%)",
-            animationDelay: "4s",
-          }} />
+          {/* System boot text */}
+          <div className="mb-8 font-mono text-xs" style={{ color: "var(--muted)" }}>
+            <p>&gt; SYSTEM: SPEED_RUN_CODE_v2.0</p>
+            <p>&gt; STATUS: ONLINE</p>
+            <p>&gt; ACCESS: FREE</p>
+          </div>
 
-        <div className="relative z-10 max-w-5xl mx-auto">
-          <p className="animate-fade-up mb-4 text-xs font-bold uppercase tracking-[0.3em]"
-            style={{ color: "rgba(255,98,0,0.7)" }}>
-            Speed Run Code
-          </p>
-
-          <h1 className="animate-fade-up delay-100 font-bold tracking-[-0.03em] mb-5"
-            style={{ fontSize: "clamp(3.2rem, 9vw, 7.5rem)", lineHeight: 0.95 }}>
-            Get unstuck.
+          {/* Main headline */}
+          <h1 className="mb-6 font-bold leading-none tracking-tight"
+            style={{ fontSize: "clamp(2.8rem, 7vw, 6rem)", color: "var(--accent)" }}>
+            <span className="neon-glow">GET UNSTUCK.</span>
             <br />
-            <span className="shimmer-text">Level up fast.</span>
+            <span style={{ color: "var(--foreground)" }}>LEVEL UP FAST.</span>
           </h1>
 
-          <p className="animate-fade-up delay-200 mb-8 max-w-lg mx-auto"
-            style={{ color: "var(--muted)", fontSize: "1.1rem", fontWeight: 300, lineHeight: 1.75 }}>
-            44 lessons across 7 tracks — from your first AI prompt to shipping a real product with payments.
+          <p className="mb-10 max-w-xl text-sm leading-relaxed" style={{ color: "var(--muted)", lineHeight: 1.8 }}>
+            44 lessons · 7 tracks · From your first AI prompt to shipping a real product with payments.
+            <br />
+            No fluff. No filler. No credit card.
           </p>
 
-          <div className="animate-fade-up delay-300 flex flex-col sm:flex-row gap-4 items-center justify-center mb-12">
+          {/* Stats row */}
+          <div className="mb-10 flex gap-10">
+            {[{ v: "44", l: "LESSONS" }, { v: "7", l: "TRACKS" }, { v: "FREE", l: "FOREVER" }].map((s) => (
+              <div key={s.l}>
+                <p className="text-2xl font-bold neon-text">{s.v}</p>
+                <p className="text-xs" style={{ color: "var(--muted)" }}>{s.l}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* CTAs */}
+          <div className="flex flex-col sm:flex-row gap-4">
             {user ? (
-              <Link href="/dashboard" className="btn-primary rounded-full px-10 py-3.5 text-sm inline-block">
-                Continue learning →
+              <Link href="/dashboard" className="btn-matrix rounded-lg px-8 py-3 text-sm inline-block">
+                CONTINUE_LEARNING →
               </Link>
             ) : (
-              <Link href="/login" className="btn-primary animate-pulse-glow rounded-full px-10 py-3.5 text-sm inline-block">
-                Start for free →
+              <Link href="/login" className="btn-matrix rounded-lg px-8 py-3 text-sm inline-block">
+                START_FREE →
               </Link>
             )}
-            <Link href="/tracks" className="btn-ghost rounded-full px-10 py-3.5 text-sm inline-block">
-              Browse tracks
+            <Link href="/tracks" className="btn-matrix-ghost rounded-lg px-8 py-3 text-sm inline-block">
+              BROWSE_TRACKS
             </Link>
           </div>
 
-          <div className="animate-fade-up delay-500 flex items-center justify-center gap-12 sm:gap-20">
-            {[
-              { v: "44", l: "Lessons" },
-              { v: "7",  l: "Tracks"  },
-              { v: "100%", l: "Free"  },
-            ].map((s, i) => (
-              <div key={s.l} className="text-center">
-                <p className="font-bold gradient-text tabular-nums"
-                  style={{ fontSize: "clamp(1.8rem,3.5vw,2.5rem)", animationDelay: `${0.6+i*0.1}s` }}>
-                  {s.v}
-                </p>
-                <p className="text-xs uppercase tracking-[0.2em] mt-1" style={{ color: "var(--muted)" }}>{s.l}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
-      {/* ── TICKER ───────────────────────────────────────────── */}
-      <div className="py-4 overflow-hidden" style={{ background: "rgba(255,98,0,0.04)" }}>
-        <div className="flex animate-scroll-left whitespace-nowrap select-none" style={{ width: "max-content" }}>
-          {[...TICKER, ...TICKER].map((item, i) => (
-            <span key={i} className="text-xs font-semibold uppercase tracking-[0.22em] px-10"
-              style={{ color: "rgba(240,240,245,0.25)" }}>
-              {item}
-            </span>
-          ))}
-        </div>
-      </div>
+      {/* ── DIVIDER ──────────────────────────────────────────── */}
+      <div style={{ borderTop: "1px solid var(--card-border)", marginBottom: 0 }} />
 
       {/* ── TRACKS ───────────────────────────────────────────── */}
-      <section className="relative px-6 py-20 overflow-hidden">
-        <div className="glow-blob"
-          style={{
-            width: "50vw", height: "50vh",
-            top: "20%", right: "-10%",
-            background: "radial-gradient(ellipse, rgba(100,60,255,0.07) 0%, transparent 65%)",
-          }} />
+      <section className="px-6 py-20">
+        <div className="mx-auto max-w-4xl">
 
-        <div className="relative z-10 mx-auto max-w-6xl">
-          <div className="mb-16 max-w-2xl">
-            <p className="section-label mb-6">The curriculum</p>
-            <h2 className="font-bold tracking-[-0.025em] leading-[0.95]"
-              style={{ fontSize: "clamp(2.5rem, 5vw, 4.5rem)" }}>
-              Everything you need.<br />
-              <span className="shimmer-text">Beginner to mastery.</span>
-            </h2>
+          <div className="mb-10">
+            <p className="text-xs mb-2" style={{ color: "var(--muted)" }}>&gt; LOADING CURRICULUM...</p>
+            <h2 className="text-2xl font-bold neon-text tracking-widest">THE_TRACKS</h2>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {TRACKS.map((track, i) => (
-              <div key={track.slug}
-                className="animate-fade-up card-luxury rounded-2xl p-6 flex flex-col gap-10"
-                style={{ animationDelay: `${i*0.06}s` }}>
-                <div className="w-8 h-8 rounded-full flex items-center justify-center"
-                  style={{ background: track.accent }}>
-                  <div className="w-2 h-2 rounded-full bg-white/60" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-sm mb-1.5">{track.title}</h3>
-                  <p className="text-xs leading-relaxed" style={{ color: "var(--muted)" }}>{track.desc}</p>
-                </div>
-              </div>
+          <div className="space-y-2">
+            {TRACKS.map((track) => (
+              <Link
+                key={track.slug}
+                href={`/tracks/${track.slug}`}
+                className="flex items-center gap-6 rounded-lg border p-4 transition-all hover:border-[var(--accent)] hover:bg-[var(--card)] hover:shadow-[0_0_15px_rgba(0,255,65,0.15)] group"
+                style={{ borderColor: "var(--card-border)" }}
+              >
+                <span className="text-xs font-bold w-6 shrink-0" style={{ color: "var(--muted)" }}>
+                  {track.label}
+                </span>
+                <span className="font-bold text-sm tracking-wider group-hover:neon-text transition-all" style={{ color: "var(--foreground)" }}>
+                  {track.title}
+                </span>
+                <span className="text-xs ml-auto" style={{ color: "var(--muted)" }}>
+                  {track.desc}
+                </span>
+                <span className="text-accent text-xs ml-4 shrink-0 opacity-0 group-hover:opacity-100 transition-all">
+                  [ENTER]
+                </span>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── REVIEWS ──────────────────────────────────────────── */}
-      <section className="relative px-6 py-20 overflow-hidden"
-        style={{ background: "linear-gradient(180deg, transparent 0%, rgba(255,98,0,0.02) 50%, transparent 100%)" }}>
-        <div className="mx-auto max-w-6xl">
-          <div className="mb-14 text-center">
-            <p className="section-label justify-center mb-5">What learners say</p>
-            <h2 className="font-bold tracking-[-0.025em] leading-[0.95]"
-              style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}>
-              Real results. Real builders.
-            </h2>
+      {/* ── DIVIDER ──────────────────────────────────────────── */}
+      <div style={{ borderTop: "1px solid var(--card-border)" }} />
+
+      {/* ── HOW IT WORKS ─────────────────────────────────────── */}
+      <section className="px-6 py-20">
+        <div className="mx-auto max-w-4xl">
+
+          <div className="mb-10">
+            <p className="text-xs mb-2" style={{ color: "var(--muted)" }}>&gt; PROCESS_SEQUENCE</p>
+            <h2 className="text-2xl font-bold neon-text tracking-widest">HOW_IT_WORKS</h2>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {REVIEWS.map((r, i) => (
-              <div key={r.handle}
-                className={`animate-fade-up card-luxury rounded-3xl p-7`}
-                style={{ animationDelay: `${i * 0.07}s` }}>
-                {/* Quote */}
-                <p className="text-sm leading-relaxed mb-6"
-                  style={{ color: "rgba(240,240,245,0.85)" }}>
-                  &ldquo;{r.text}&rdquo;
-                </p>
-                {/* Author */}
-                <div className="flex items-center gap-3 pt-4"
-                  style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-                  {/* Avatar placeholder */}
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-                    style={{ background: "rgba(255,98,0,0.2)", color: "var(--accent)" }}>
-                    {r.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold">{r.name}</p>
-                    <p className="text-xs" style={{ color: "var(--muted)" }}>{r.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── THE METHOD ───────────────────────────────────────── */}
-      <section className="relative px-6 py-20 overflow-hidden"
-        style={{ background: "linear-gradient(180deg, transparent 0%, rgba(255,98,0,0.03) 50%, transparent 100%)" }}>
-        <div className="glow-blob"
-          style={{
-            width: "45vw", height: "45vh",
-            bottom: "0%", left: "-5%",
-            background: "radial-gradient(ellipse, rgba(255,98,0,0.07) 0%, transparent 65%)",
-          }} />
-
-        <div className="relative z-10 mx-auto max-w-6xl">
-          <div className="grid lg:grid-cols-2 gap-16 items-start">
-            {/* Left — heading */}
-            <div className="lg:sticky lg:top-24">
-              <p className="section-label mb-8">The method</p>
-              <h2 className="font-bold tracking-[-0.025em] leading-[0.95] mb-8"
-                style={{ fontSize: "clamp(2.2rem, 4.5vw, 3.8rem)" }}>
-                Short video.<br />
-                Real challenge.<br />
-                <span className="shimmer-text">Keep the streak.</span>
-              </h2>
-              <p style={{ color: "var(--muted)", fontSize: "1.05rem", fontWeight: 300, lineHeight: 1.9 }}>
-                Every lesson pairs a handpicked video with something you actually build.
-                Complete it, earn XP, protect your streak. Miss a day and it resets —
-                same mechanic that makes Duolingo dangerous.
-              </p>
-            </div>
-
-            {/* Right — steps */}
-            <div className="space-y-4">
-              {[
-                { n: "01", h: "Watch", d: "Under 15 minutes. Handpicked for speed and clarity — no fluff." },
-                { n: "02", h: "Read the notes", d: "Written summary below every video. Catch what the video missed." },
-                { n: "03", h: "Do the challenge", d: "Build something real. Not multiple choice — actual output required." },
-                { n: "04", h: "Earn XP & streak", d: "Complete it. Stack XP. Come back tomorrow or the streak resets." },
-              ].map((step, i) => (
-                <div key={step.n}
-                  className={`animate-fade-up delay-${(i+1)*100} card-luxury rounded-2xl px-7 py-6 flex items-start gap-6`}>
-                  <span className="text-xs font-bold pt-0.5 shrink-0" style={{ color: "rgba(255,98,0,0.5)" }}>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {STEPS.map((step) => (
+              <div key={step.n}
+                className="matrix-card rounded-lg p-6">
+                <div className="flex items-start gap-4">
+                  <span className="text-xs font-bold shrink-0 mt-0.5" style={{ color: "var(--muted)" }}>
                     {step.n}
                   </span>
                   <div>
-                    <h3 className="font-bold mb-1.5">{step.h}</h3>
-                    <p className="text-sm leading-relaxed" style={{ color: "var(--muted)" }}>{step.d}</p>
+                    <p className="font-bold text-sm tracking-widest mb-2" style={{ color: "var(--accent)" }}>
+                      {step.title}
+                    </p>
+                    <p className="text-xs leading-relaxed" style={{ color: "var(--muted)", lineHeight: 1.7 }}>
+                      {step.desc}
+                    </p>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────────── */}
-      <section className="relative px-6 py-32 text-center overflow-hidden">
-        <div className="glow-blob"
-          style={{
-            width: "70vw", height: "70vh",
-            top: "50%", left: "50%",
-            transform: "translate(-50%,-50%)",
-            background: "radial-gradient(ellipse, rgba(255,98,0,0.18) 0%, rgba(120,40,200,0.06) 40%, transparent 65%)",
-          }} />
+      {/* ── DIVIDER ──────────────────────────────────────────── */}
+      <div style={{ borderTop: "1px solid var(--card-border)" }} />
 
-        <div className="relative z-10 mx-auto max-w-3xl">
-          <p className="section-label justify-center mb-10">Ready?</p>
-          <h2 className="animate-fade-up font-bold tracking-[-0.03em] mb-8"
-            style={{ fontSize: "clamp(3rem, 8vw, 7rem)", lineHeight: 0.93 }}>
-            Start your<br />
-            <span className="shimmer-text">speed run.</span>
-          </h2>
-          <p className="animate-fade-up delay-100 mb-14"
-            style={{ color: "var(--muted)", fontSize: "1.1rem", fontWeight: 300, letterSpacing: "0.02em" }}>
-            Free. No credit card. No fluff.
-          </p>
-          <div className="animate-fade-up delay-200">
-            {user ? (
-              <Link href="/dashboard" className="btn-primary rounded-full px-16 py-5 text-base inline-block">
-                Go to dashboard →
-              </Link>
-            ) : (
-              <Link href="/login" className="btn-primary animate-pulse-glow rounded-full px-16 py-5 text-base inline-block">
-                Create free account →
-              </Link>
-            )}
+      {/* ── REVIEWS ──────────────────────────────────────────── */}
+      <section className="px-6 py-20">
+        <div className="mx-auto max-w-4xl">
+
+          <div className="mb-10">
+            <p className="text-xs mb-2" style={{ color: "var(--muted)" }}>&gt; USER_LOGS</p>
+            <h2 className="text-2xl font-bold neon-text tracking-widest">WHAT_THEY_SAY</h2>
           </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {REVIEWS.map((r) => (
+              <div key={r.name} className="matrix-card rounded-lg p-5">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-7 h-7 rounded-sm flex items-center justify-center text-xs font-bold shrink-0"
+                    style={{ background: "var(--card-border)", color: "var(--accent)", border: "1px solid var(--card-border)" }}>
+                    {r.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold" style={{ color: "var(--foreground)" }}>{r.name}</p>
+                    <p className="text-xs" style={{ color: "var(--muted)" }}>{r.role}</p>
+                  </div>
+                </div>
+                <p className="text-xs leading-relaxed" style={{ color: "var(--muted)", lineHeight: 1.7 }}>
+                  &ldquo;{r.text}&rdquo;
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── DIVIDER ──────────────────────────────────────────── */}
+      <div style={{ borderTop: "1px solid var(--card-border)" }} />
+
+      {/* ── CTA ──────────────────────────────────────────────── */}
+      <section className="px-6 py-24 text-center">
+        <div className="mx-auto max-w-2xl">
+          <p className="text-xs mb-4" style={{ color: "var(--muted)" }}>&gt; READY_TO_BEGIN?</p>
+          <h2 className="text-4xl font-bold mb-6 neon-glow tracking-widest">
+            START_YOUR_RUN
+          </h2>
+          <p className="text-sm mb-10" style={{ color: "var(--muted)" }}>
+            Free. No credit card. No fluff. Just skills.
+          </p>
+          {user ? (
+            <Link href="/dashboard" className="btn-matrix rounded-lg px-12 py-4 text-sm inline-block">
+              GO_TO_DASHBOARD →
+            </Link>
+          ) : (
+            <Link href="/login" className="btn-matrix rounded-lg px-12 py-4 text-sm inline-block">
+              CREATE_ACCOUNT →
+            </Link>
+          )}
         </div>
       </section>
 

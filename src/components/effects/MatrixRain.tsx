@@ -1,54 +1,75 @@
 "use client";
 
-import { useEffect } from "react";
-
-const CHARS = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ01234567890";
+import { useEffect, useRef } from "react";
 
 export function MatrixRain() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   useEffect(() => {
-    const drops: HTMLDivElement[] = [];
-    const dropCount = 30;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    function createDrop() {
-      const drop = document.createElement("div");
-      drop.className = "matrix-char";
-      drop.textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
-      drop.style.left = `${Math.random() * 100}vw`;
-      drop.style.animationDuration = `${5 + Math.random() * 5}s`;
-      drop.style.animationDelay = `${Math.random() * 5}s`;
-      drop.style.fontSize = `${14 + Math.random() * 10}px`;
-      document.body.appendChild(drop);
-      drops.push(drop);
+    const CHARS = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ01234567890<>{}[]";
+    const FONT_SIZE = 14;
+    let columns: number[] = [];
+    let animId: number;
 
-      // Change character occasionally
-      const interval = setInterval(() => {
-        drop.textContent = CHARS[Math.floor(Math.random() * CHARS.length)];
-      }, 100);
-
-      // Clean up after animation
-      setTimeout(() => {
-        clearInterval(interval);
-        drop.remove();
-        const idx = drops.indexOf(drop);
-        if (idx > -1) drops.splice(idx, 1);
-      }, (5 + Math.random() * 5) * 1000);
+    function resize() {
+      canvas!.width  = window.innerWidth;
+      canvas!.height = window.innerHeight;
+      const count = Math.floor(canvas!.width / FONT_SIZE);
+      columns = Array.from({ length: count }, () => Math.random() * -100);
     }
 
-    // Stagger initial creation
-    for (let i = 0; i < dropCount; i++) {
-      setTimeout(() => createDrop(), i * 200);
+    function draw() {
+      // Fading trail
+      ctx!.fillStyle = "rgba(0,0,0,0.05)";
+      ctx!.fillRect(0, 0, canvas!.width, canvas!.height);
+
+      ctx!.font = `${FONT_SIZE}px monospace`;
+
+      columns.forEach((y, i) => {
+        // Brightest (white-green) lead character
+        const brightness = Math.random() > 0.95 ? "rgba(200,255,200,0.9)" : "rgba(0,255,65,0.7)";
+        ctx!.fillStyle = brightness;
+        const char = CHARS[Math.floor(Math.random() * CHARS.length)];
+        ctx!.fillText(char, i * FONT_SIZE, y * FONT_SIZE);
+
+        // Reset when off screen
+        if (y * FONT_SIZE > canvas!.height && Math.random() > 0.975) {
+          columns[i] = 0;
+        }
+        columns[i] += 0.5;
+      });
+
+      animId = requestAnimationFrame(draw);
     }
 
-    // Continuously spawn new drops
-    const spawnInterval = setInterval(() => {
-      if (drops.length < dropCount) createDrop();
-    }, 500);
+    resize();
+    draw();
+    window.addEventListener("resize", resize);
 
     return () => {
-      clearInterval(spawnInterval);
-      drops.forEach((d) => d.remove());
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
     };
   }, []);
 
-  return null; // Renders directly to body
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
+        pointerEvents: "none",
+        zIndex: 0,
+        opacity: 0.25,
+      }}
+    />
+  );
 }
