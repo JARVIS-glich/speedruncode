@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { signOut } from "@/lib/actions/auth";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Navbar() {
   const [username, setUsername] = useState<string | null | undefined>(undefined);
@@ -53,7 +54,7 @@ export function Navbar() {
           <span className="text-foreground">Speed Run Code</span>
         </Link>
 
-        <nav className="flex items-center gap-7 text-sm">
+        <nav className="flex items-center gap-5 text-sm">
           <Link href="/tracks" className="text-muted hover:text-foreground transition-colors duration-200 font-medium">
             Tracks
           </Link>
@@ -83,6 +84,7 @@ export function Navbar() {
               Sign in
             </Link>
           )}
+          <ThemeToggle />
         </nav>
       </div>
     </header>
