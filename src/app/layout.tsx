@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Navbar } from "@/components/layout/Navbar";
+import { MatrixRain } from "@/components/effects/MatrixRain";
+import { ScanLine } from "@/components/effects/ScanLine";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -38,6 +40,8 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col">
+        <ScanLine />
+        <MatrixRain />
         <Navbar />
         <main className="flex-1">{children}</main>
       </body>
