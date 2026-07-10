@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
-/* ── Professional Black & White Theme ─────────────────────────────────────── */
+/* ── Black & White Theme ─────────────────────────────────────── */
 :root {
   --background:   #000000;
   --foreground:   #ffffff;
   --card:         #0a0a0a;
   --card-hover:   #141414;
   --card-border:  #1a1a1a;
-  --muted:        #737373;
+  --muted:        #666666;
   --accent:       #ffffff;
   --accent-hover: #e5e5e5;
-  --success:      #22c55e;
-  --error:        #ef4444;
+  --success:      #ffffff;
+  --error:        #ffffff;
 }
 
 @theme inline {
@@ -42,19 +42,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ── Dot Grid Background ─────────────────────────────── */
-.dot-grid {
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 24px 24px;
-  background-position: 0 0, 12px 12px;
-}
-
-.dot-grid-dense {
-  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
-  background-size: 16px 16px;
-}
-
-/* ── Subtle Animations ─────────────────────────────── */
+/* ── Animations ─────────────────────────────── */
 
 @keyframes fade-in {
   from { opacity: 0; }
@@ -72,20 +60,24 @@ body {
   }
 }
 
-@keyframes slide-in {
-  from { 
-    opacity: 0; 
-    transform: translateX(-10px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateX(0); 
-  }
+@keyframes glide-horizontal {
+  0% { transform: translateX(-100vw); }
+  100% { transform: translateX(100vw); }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+@keyframes glide-diagonal-1 {
+  0% { transform: translate(-100vw, -100vh); }
+  100% { transform: translate(100vw, 100vh); }
+}
+
+@keyframes glide-diagonal-2 {
+  0% { transform: translate(100vw, -100vh); }
+  100% { transform: translate(-100vw, 100vh); }
+}
+
+@keyframes glide-vertical {
+  0% { transform: translateY(-100vh); }
+  100% { transform: translateY(100vh); }
 }
 
 .animate-fade-in { 
@@ -96,27 +88,74 @@ body {
   animation: fade-up 0.8s ease both; 
 }
 
-.animate-slide-in { 
-  animation: slide-in 0.6s ease both; 
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
 .delay-300 { animation-delay: 0.3s; }
 .delay-400 { animation-delay: 0.4s; }
 .delay-500 { animation-delay: 0.5s; }
-.delay-600 { animation-delay: 0.6s; }
 
-/* ── Enhanced hover effects ────────────────────────── */
+/* ── Gliding Lines ────────────────────────── */
+
+.gliding-line {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.05);
+  pointer-events: none;
+}
+
+.glide-h-1 {
+  width: 300px;
+  height: 1px;
+  top: 20%;
+  animation: glide-horizontal 15s linear infinite;
+}
+
+.glide-h-2 {
+  width: 200px;
+  height: 1px;
+  top: 60%;
+  animation: glide-horizontal 20s linear infinite;
+  animation-delay: 5s;
+}
+
+.glide-v-1 {
+  width: 1px;
+  height: 300px;
+  left: 30%;
+  animation: glide-vertical 18s linear infinite;
+  animation-delay: 3s;
+}
+
+.glide-v-2 {
+  width: 1px;
+  height: 200px;
+  left: 70%;
+  animation: glide-vertical 22s linear infinite;
+  animation-delay: 8s;
+}
+
+.glide-d-1 {
+  width: 250px;
+  height: 1px;
+  transform-origin: center;
+  animation: glide-diagonal-1 25s linear infinite;
+  animation-delay: 2s;
+}
+
+.glide-d-2 {
+  width: 180px;
+  height: 1px;
+  transform-origin: center;
+  animation: glide-diagonal-2 28s linear infinite;
+  animation-delay: 10s;
+}
+
+/* ── Hover effects ────────────────────────── */
 
 .hover-lift {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .hover-lift:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.4);
 }
