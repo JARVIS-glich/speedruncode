@@ -11,104 +11,93 @@ const TRACKS = [
   { slug: "ai-agents-money",  title: "AI Agents & Revenue", desc: "Build and monetize AI agents with Voiceflow, Lindy, and Stripe" },
 ];
 
-const STEPS = [
-  { n: "1", title: "Watch", desc: "Concise video lessons under 15 minutes. No filler, just what you need to know." },
-  { n: "2", title: "Read", desc: "Written notes below each video reinforce the key concepts." },
-  { n: "3", title: "Quiz", desc: "Answer 3-5 questions. Score 60%+ to unlock the challenge." },
-  { n: "4", title: "Build", desc: "Complete a real challenge. Earn XP and maintain your streak." },
-];
-
-const REVIEWS = [
-  { name: "Marcus T.",  role: "Indie hacker",          text: "Finished Cursor Mastery in 3 days. Now shipping features in half the time. The debugging lesson alone was worth it." },
-  { name: "Priya S.",   role: "Freelance developer",   text: "The AI Fundamentals track changed how I write prompts. I used to get garbage output. Now I get what I want first try." },
-  { name: "James O.",   role: "Non-technical founder", text: "Built my first Bubble app after the No-Code track. It has real users now. Lessons are short, challenges make it stick." },
-  { name: "Sofia R.",   role: "CS student",            text: "Kept a 21-day streak across three tracks. The XP leaderboard makes it feel like a game — but everything is real skills." },
-  { name: "Arjun M.",   role: "Agency owner",          text: "Went from not knowing n8n to automating my entire client onboarding in a week. Automation track is incredibly well structured." },
-  { name: "Lena K.",    role: "Designer learning to code", text: "I've tried four other AI coding courses. This is the only one I finished. 15 min lessons + real challenge = the format that works." },
-];
-
 export default async function HomePage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-screen">
       
-      {/* Animated background gradients */}
-      <div className="fixed inset-0 -z-10">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse" 
-          style={{ animationDuration: '4s' }} />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/3 rounded-full blur-3xl animate-pulse" 
-          style={{ animationDuration: '6s', animationDelay: '1s' }} />
-      </div>
+      {/* Dot grid background */}
+      <div className="fixed inset-0 -z-10 dot-grid" />
 
       {/* Hero */}
-      <section className="px-6 pt-20 pb-16">
-        <div className="mx-auto max-w-5xl">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight animate-fade-up">
-            Master AI-powered
+      <section className="relative px-6 pt-32 pb-20">
+        <div className="mx-auto max-w-4xl text-center">
+          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-8 leading-[1.1] tracking-tight animate-fade-up">
+            Learn AI development.
             <br />
-            <span className="text-muted">development in days</span>
+            Ship real products.
           </h1>
 
-          <p className="text-lg text-muted mb-8 max-w-2xl leading-relaxed animate-fade-up delay-100">
-            44 hands-on lessons across 7 tracks. From your first AI prompt to shipping real products with payments.
+          <p className="text-xl text-muted mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-up delay-100">
+            Master AI-powered development with hands-on lessons. From first prompt to shipped product in weeks, not months.
           </p>
 
-          <div className="flex gap-6 mb-12 animate-fade-up delay-200">
-            <div>
-              <p className="text-3xl font-bold">44</p>
-              <p className="text-sm text-muted">Lessons</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold">7</p>
-              <p className="text-sm text-muted">Tracks</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold">Free</p>
-              <p className="text-sm text-muted">Forever</p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-4 animate-fade-up delay-300">
+          <div className="flex flex-wrap gap-4 justify-center animate-fade-up delay-200">
             {user ? (
               <Link href="/dashboard" 
-                className="bg-foreground text-background px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
-                Continue learning →
+                className="bg-foreground text-background px-8 py-4 rounded-full font-semibold text-lg hover:opacity-90 transition-all hover:scale-105">
+                Continue learning
               </Link>
             ) : (
               <Link href="/login" 
-                className="bg-foreground text-background px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
-                Start for free →
+                className="bg-foreground text-background px-8 py-4 rounded-full font-semibold text-lg hover:opacity-90 transition-all hover:scale-105">
+                Start free
               </Link>
             )}
             <Link href="/tracks" 
-              className="border border-card-border px-8 py-3 rounded-lg font-semibold hover:border-foreground transition-colors">
+              className="border-2 border-card-border px-8 py-4 rounded-full font-semibold text-lg hover:border-foreground transition-all">
               Browse tracks
             </Link>
+          </div>
+
+          <div className="flex gap-12 justify-center mt-16 text-center animate-fade-up delay-300">
+            <div>
+              <p className="text-5xl font-bold mb-2">44</p>
+              <p className="text-sm text-muted">Lessons</p>
+            </div>
+            <div>
+              <p className="text-5xl font-bold mb-2">7</p>
+              <p className="text-sm text-muted">Tracks</p>
+            </div>
+            <div>
+              <p className="text-5xl font-bold mb-2">Free</p>
+              <p className="text-sm text-muted">Forever</p>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Tracks */}
-      <section className="px-6 py-16 bg-card/30">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="text-3xl font-bold mb-8">All tracks</h2>
+      <section className="relative px-6 py-32">
+        <div className="mx-auto max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-bold mb-4">Tracks</h2>
+            <p className="text-xl text-muted">From fundamentals to monetization</p>
+          </div>
 
-          <div className="grid gap-4">
+          <div className="space-y-3">
             {TRACKS.map((track, i) => (
               <Link
                 key={track.slug}
                 href={`/tracks/${track.slug}`}
-                className="group p-5 rounded-lg border border-card-border hover:border-foreground bg-card/50 transition-all hover:bg-card animate-fade-up"
-                style={{ animationDelay: `${i * 50}ms` }}
+                className="group block p-6 rounded-2xl border border-card-border hover:border-foreground bg-background transition-all hover-lift animate-fade-up"
+                style={{ animationDelay: `${i * 60}ms` }}
               >
-                <h3 className="font-bold text-lg mb-2 group-hover:text-foreground transition-colors">
-                  {track.title}
-                </h3>
-                <p className="text-muted text-sm">
-                  {track.desc}
-                </p>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-bold text-xl mb-2 group-hover:text-foreground transition-colors">
+                      {track.title}
+                    </h3>
+                    <p className="text-muted">
+                      {track.desc}
+                    </p>
+                  </div>
+                  <svg className="w-6 h-6 text-muted group-hover:text-foreground group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
               </Link>
             ))}
           </div>
@@ -116,22 +105,30 @@ export default async function HomePage() {
       </section>
 
       {/* How it works */}
-      <section className="px-6 py-16">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="text-3xl font-bold mb-8">How it works</h2>
+      <section className="relative px-6 py-32 dot-grid-dense">
+        <div className="mx-auto max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-bold mb-4">How it works</h2>
+            <p className="text-xl text-muted">Four steps to mastery</p>
+          </div>
 
           <div className="grid md:grid-cols-2 gap-6">
-            {STEPS.map((step, i) => (
+            {[
+              { n: "1", title: "Watch", desc: "Concise video lessons under 15 minutes. Learn the essentials, skip the fluff." },
+              { n: "2", title: "Read", desc: "Written notes reinforce every concept. Review anytime, anywhere." },
+              { n: "3", title: "Quiz", desc: "Test your understanding. Score 60%+ to prove you're ready." },
+              { n: "4", title: "Build", desc: "Complete real challenges. Earn XP and build your portfolio." },
+            ].map((step, i) => (
               <div key={step.n} 
-                className="p-6 rounded-lg border border-card-border bg-card/30 animate-fade-up"
+                className="p-8 rounded-2xl border border-card-border bg-card/50 hover:bg-card transition-all hover-lift animate-fade-up"
                 style={{ animationDelay: `${i * 100}ms` }}>
-                <div className="flex items-start gap-4">
-                  <div className="w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center font-bold text-sm shrink-0">
+                <div className="flex items-start gap-6">
+                  <div className="w-12 h-12 rounded-full bg-foreground text-background flex items-center justify-center font-bold text-xl shrink-0">
                     {step.n}
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg mb-2">{step.title}</h3>
-                    <p className="text-muted text-sm leading-relaxed">{step.desc}</p>
+                    <h3 className="font-bold text-2xl mb-3">{step.title}</h3>
+                    <p className="text-muted leading-relaxed">{step.desc}</p>
                   </div>
                 </div>
               </div>
@@ -140,26 +137,34 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Reviews */}
-      <section className="px-6 py-16 bg-card/30">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="text-3xl font-bold mb-8">What people are saying</h2>
+      {/* Social proof */}
+      <section className="relative px-6 py-32">
+        <div className="mx-auto max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-bold mb-4">Trusted by builders</h2>
+            <p className="text-xl text-muted">Join thousands learning to ship faster</p>
+          </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {REVIEWS.map((r, i) => (
+          <div className="grid md:grid-cols-2 gap-6">
+            {[
+              { name: "Marcus T.", role: "Indie hacker", text: "Finished Cursor Mastery in 3 days. Now shipping features in half the time." },
+              { name: "Priya S.", role: "Freelance developer", text: "The AI Fundamentals track changed how I write prompts. First-try results now." },
+              { name: "James O.", role: "Non-technical founder", text: "Built my first real app after the No-Code track. It has users." },
+              { name: "Sofia R.", role: "CS student", text: "21-day streak across three tracks. The gamification makes learning addictive." },
+            ].map((r, i) => (
               <div key={r.name} 
-                className="p-6 rounded-lg border border-card-border bg-card/50 animate-fade-up"
+                className="p-8 rounded-2xl border border-card-border bg-card/30 hover:bg-card transition-all hover-lift animate-fade-up"
                 style={{ animationDelay: `${i * 80}ms` }}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-full bg-card-border flex items-center justify-center font-bold">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-card-border flex items-center justify-center font-bold text-lg">
                     {r.name.charAt(0)}
                   </div>
                   <div>
-                    <p className="font-semibold text-sm">{r.name}</p>
-                    <p className="text-xs text-muted">{r.role}</p>
+                    <p className="font-semibold">{r.name}</p>
+                    <p className="text-sm text-muted">{r.role}</p>
                   </div>
                 </div>
-                <p className="text-sm text-muted leading-relaxed">
+                <p className="text-muted leading-relaxed">
                   "{r.text}"
                 </p>
               </div>
@@ -169,23 +174,23 @@ export default async function HomePage() {
       </section>
 
       {/* Final CTA */}
-      <section className="px-6 py-20 text-center">
-        <div className="mx-auto max-w-2xl">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 animate-fade-up">
-            Ready to start?
+      <section className="relative px-6 py-32 text-center">
+        <div className="mx-auto max-w-3xl">
+          <h2 className="text-6xl md:text-7xl font-bold mb-8 leading-tight">
+            Start learning today.
           </h2>
-          <p className="text-lg text-muted mb-8 animate-fade-up delay-100">
-            Free forever. No credit card required. Start learning in 30 seconds.
+          <p className="text-xl text-muted mb-10">
+            Free forever. No credit card. Start in 30 seconds.
           </p>
           {user ? (
             <Link href="/dashboard" 
-              className="bg-foreground text-background px-10 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity inline-block animate-fade-up delay-200">
-              Go to dashboard →
+              className="bg-foreground text-background px-10 py-5 rounded-full font-semibold text-xl hover:opacity-90 transition-all hover:scale-105 inline-block">
+              Go to dashboard
             </Link>
           ) : (
             <Link href="/login" 
-              className="bg-foreground text-background px-10 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity inline-block animate-fade-up delay-200">
-              Create account →
+              className="bg-foreground text-background px-10 py-5 rounded-full font-semibold text-xl hover:opacity-90 transition-all hover:scale-105 inline-block">
+              Create account
             </Link>
           )}
         </div>
