@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { CodeBackground } from "@/components/effects/CodeBackground";
 
 const TRACKS = [
   { slug: "ai-fundamentals",  title: "AI Fundamentals",   desc: "Master Cursor, Copilot, prompting, and AI-powered debugging" },
@@ -18,6 +19,9 @@ export default async function HomePage() {
   return (
     <div className="relative min-h-screen">
       
+      {/* Animated code background */}
+      <CodeBackground />
+
       {/* Gliding white lines background */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         <div className="gliding-line glide-h-1" />
