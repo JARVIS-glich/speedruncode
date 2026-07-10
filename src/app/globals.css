@@ -1,31 +1,33 @@
 @import "tailwindcss";
 
-/* ── MATRIX DARK MODE (default) ─────────────────────────────────────────────── */
+/* ── DARK MODE (default) — Orange & Black ─────────────────────────────────── */
 :root {
   --background:   #000000;
-  --foreground:   #00ff41;
-  --card:         #0a0e0a;
-  --card-hover:   #0f1f0f;
-  --card-border:  #00ff4140;
-  --muted:        #008f11;
-  --accent:       #00ff41;
-  --accent-hover: #00dd33;
-  --success:      #39ff14;
-  --cyan:         #00ffff;
+  --foreground:   #ffffff;
+  --card:         #0a0a0a;
+  --card-hover:   #141414;
+  --card-border:  #1f1f1f;
+  --muted:        #a3a3a3;
+  --accent:       #f97316;
+  --accent-hover: #ea580c;
+  --success:      #22c55e;
+  --cyan:         #06b6d4;
+  --warning:      #eab308;
 }
 
-/* ── LIGHT MODE (Dark Blue Aesthetic) ───────────────────────────────────────── */
+/* ── LIGHT MODE ───────────────────────────────────────────────────────────── */
 :root[data-theme="light"] {
-  --background:   #0a1929;
-  --foreground:   #b0d4f1;
-  --card:         #132f4c;
-  --card-hover:   #1e3a5f;
-  --card-border:  #2e5a8a;
-  --muted:        #5090d3;
-  --accent:       #60a5fa;
-  --accent-hover: #3b82f6;
-  --success:      #10b981;
+  --background:   #ffffff;
+  --foreground:   #0a0a0a;
+  --card:         #f9f9f9;
+  --card-hover:   #f0f0f0;
+  --card-border:  #e5e5e5;
+  --muted:        #737373;
+  --accent:       #f97316;
+  --accent-hover: #ea580c;
+  --success:      #22c55e;
   --cyan:         #06b6d4;
+  --warning:      #eab308;
 }
 
 @theme inline {
@@ -39,6 +41,7 @@
   --color-accent-hover: var(--accent-hover);
   --color-success:      var(--success);
   --color-cyan:         var(--cyan);
+  --color-warning:      var(--warning);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -48,15 +51,10 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-mono), 'Courier New', monospace;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
   transition: background 0.2s ease, color 0.2s ease;
-}
-
-/* Light mode uses clean sans-serif */
-:root[data-theme="light"] body {
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
 /* ── Animations ─────────────────────────────── */
@@ -65,105 +63,8 @@ body {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-@keyframes scan-line {
-  0%   { top: 0%; }
-  100% { top: 100%; }
-}
-@keyframes matrix-fall {
-  0%   { transform: translateY(-100%); opacity: 0; }
-  10%  { opacity: 0.8; }
-  90%  { opacity: 0.8; }
-  100% { transform: translateY(100vh); opacity: 0; }
-}
-@keyframes glow-pulse {
-  0%, 100% { text-shadow: 0 0 5px var(--accent), 0 0 10px var(--accent); }
-  50% { text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px var(--accent); }
-}
 
 .animate-fade-up { animation: fade-up 0.6s ease both; }
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
 .delay-300 { animation-delay: 0.3s; }
-
-/* ── Text effects ──────────────────────────── */
-
-.neon-text {
-  color: var(--accent);
-  text-shadow: 0 0 5px var(--accent), 0 0 10px var(--accent);
-}
-
-.neon-glow {
-  text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px var(--accent);
-  animation: glow-pulse 2s ease-in-out infinite;
-}
-
-/* ── Cards ────────────────────────────────── */
-.matrix-card {
-  background: var(--card);
-  border: 1px solid var(--card-border);
-  transition: all 0.3s ease;
-}
-.matrix-card:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 20px rgba(0,255,65,0.2);
-  transform: translateY(-2px);
-}
-
-/* ── Buttons ───────────────────────────────── */
-.btn-matrix {
-  background: var(--accent);
-  color: #000;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  border: 2px solid var(--accent);
-  box-shadow: 0 0 10px var(--accent);
-  transition: all 0.2s ease;
-}
-.btn-matrix:hover {
-  box-shadow: 0 0 20px var(--accent), 0 0 40px var(--accent);
-  transform: scale(1.05);
-}
-
-.btn-matrix-ghost {
-  background: transparent;
-  color: var(--accent);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  border: 2px solid var(--card-border);
-  transition: all 0.2s ease;
-}
-.btn-matrix-ghost:hover {
-  border-color: var(--accent);
-  box-shadow: 0 0 10px var(--accent);
-}
-
-/* ── Scan line ──────────────────────────────── */
-.scan-line {
-  position: fixed;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--accent);
-  pointer-events: none;
-  z-index: 9999;
-  animation: scan-line 6s linear infinite;
-  opacity: 0.3;
-}
-
-/* ── Matrix rain characters ───────────────── */
-.matrix-char {
-  position: fixed;
-  color: var(--accent);
-  font-family: var(--font-mono);
-  font-size: 18px;
-  opacity: 0.5;
-  pointer-events: none;
-  text-shadow: 0 0 5px var(--accent);
-  animation: matrix-fall linear infinite;
-  z-index: 1;
-}
-
-/* Content above effects */
-main, header { position: relative; z-index: 10; }
