@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { signOut } from "@/lib/actions/auth";
-import { ThemeToggle } from "./ThemeToggle";
 
 export function Navbar() {
   const [username, setUsername] = useState<string | null | undefined>(undefined);
@@ -31,56 +30,63 @@ export function Navbar() {
   const isLoading = username === undefined;
 
   return (
-    <header
-      className="sticky top-0 z-50 px-6"
-      style={{
-        background: "rgba(0,0,0,0.92)",
-        backdropFilter: "blur(12px)",
-        borderBottom: "1px solid rgba(0,255,65,0.15)",
-      }}
-    >
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between">
-
-        <Link href="/" className="font-bold text-sm tracking-widest uppercase neon-text hover:neon-glow transition-all">
-          ⚡ SPEED_RUN_CODE
+    <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-card-border">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+        
+        <Link 
+          href="/" 
+          className="text-xl font-bold tracking-tight hover:opacity-80 transition-opacity"
+        >
+          SpeedRunCode
         </Link>
 
-        <nav className="flex items-center gap-6 text-xs font-bold uppercase tracking-widest">
-          <Link href="/tracks" className="transition-all" style={{ color: "var(--muted)" }}
-            onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
-            onMouseLeave={e => (e.currentTarget.style.color = "var(--muted)")}>
-            TRACKS
+        <nav className="flex items-center gap-8 text-sm">
+          <Link 
+            href="/tracks" 
+            className="text-muted hover:text-foreground transition-colors font-medium"
+          >
+            Tracks
           </Link>
-          <Link href="/leaderboard" className="transition-all" style={{ color: "var(--muted)" }}
-            onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
-            onMouseLeave={e => (e.currentTarget.style.color = "var(--muted)")}>
-            RANKINGS
+          <Link 
+            href="/leaderboard" 
+            className="text-muted hover:text-foreground transition-colors font-medium"
+          >
+            Leaderboard
           </Link>
 
           {isLoading ? (
-            <div className="h-3 w-20 rounded animate-pulse" style={{ background: "var(--card-border)" }} />
+            <div className="h-4 w-20 rounded animate-pulse bg-card-border" />
           ) : username ? (
             <>
-              <Link href="/dashboard" className="transition-all" style={{ color: "var(--muted)" }}
-                onMouseEnter={e => (e.currentTarget.style.color = "var(--accent)")}
-                onMouseLeave={e => (e.currentTarget.style.color = "var(--muted)")}>
-                DASHBOARD
+              <Link 
+                href="/dashboard" 
+                className="text-muted hover:text-foreground transition-colors font-medium"
+              >
+                Dashboard
               </Link>
-              <span className="neon-text">&gt;{username}</span>
+              <Link 
+                href="/profile" 
+                className="text-foreground font-semibold"
+              >
+                {username}
+              </Link>
               <form action={signOut}>
-                <button type="submit" className="transition-all text-xs font-bold uppercase tracking-widest" style={{ color: "var(--muted)" }}
-                  onMouseEnter={e => (e.currentTarget.style.color = "#ff4444")}
-                  onMouseLeave={e => (e.currentTarget.style.color = "var(--muted)")}>
-                  EXIT
+                <button 
+                  type="submit" 
+                  className="text-muted hover:text-error transition-colors font-medium"
+                >
+                  Sign out
                 </button>
               </form>
             </>
           ) : (
-            <Link href="/login" className="btn-matrix rounded px-4 py-1.5 text-xs inline-block">
-              ENTER
+            <Link 
+              href="/login" 
+              className="bg-foreground text-background px-4 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+            >
+              Sign in
             </Link>
           )}
-          <ThemeToggle />
         </nav>
       </div>
     </header>

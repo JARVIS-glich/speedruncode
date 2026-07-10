@@ -1,33 +1,17 @@
 @import "tailwindcss";
 
-/* ── DARK MODE (default) — Orange & Black ─────────────────────────────────── */
+/* ── Professional Black & White Theme ─────────────────────────────────────── */
 :root {
-  --background:   #000000;
+  --background:   #0a0a0a;
   --foreground:   #ffffff;
-  --card:         #0a0a0a;
-  --card-hover:   #141414;
-  --card-border:  #1f1f1f;
-  --muted:        #a3a3a3;
-  --accent:       #f97316;
-  --accent-hover: #ea580c;
+  --card:         #111111;
+  --card-hover:   #1a1a1a;
+  --card-border:  #262626;
+  --muted:        #a1a1a1;
+  --accent:       #ffffff;
+  --accent-hover: #e5e5e5;
   --success:      #22c55e;
-  --cyan:         #06b6d4;
-  --warning:      #eab308;
-}
-
-/* ── LIGHT MODE ───────────────────────────────────────────────────────────── */
-:root[data-theme="light"] {
-  --background:   #ffffff;
-  --foreground:   #0a0a0a;
-  --card:         #f9f9f9;
-  --card-hover:   #f0f0f0;
-  --card-border:  #e5e5e5;
-  --muted:        #737373;
-  --accent:       #f97316;
-  --accent-hover: #ea580c;
-  --success:      #22c55e;
-  --cyan:         #06b6d4;
-  --warning:      #eab308;
+  --error:        #ef4444;
 }
 
 @theme inline {
@@ -40,31 +24,66 @@
   --color-accent:       var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-success:      var(--success);
-  --color-cyan:         var(--cyan);
-  --color-warning:      var(--warning);
+  --color-error:        var(--error);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-*, *::before, *::after { box-sizing: border-box; }
+*, *::before, *::after { 
+  box-sizing: border-box; 
+}
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  transition: background 0.2s ease, color 0.2s ease;
 }
 
-/* ── Animations ─────────────────────────────── */
+/* ── Subtle Animations ─────────────────────────────── */
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { 
+    opacity: 0; 
+    transform: translateY(10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
 }
 
-.animate-fade-up { animation: fade-up 0.6s ease both; }
+@keyframes slide-in {
+  from { 
+    opacity: 0; 
+    transform: translateX(-10px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateX(0); 
+  }
+}
+
+.animate-fade-in { 
+  animation: fade-in 0.5s ease both; 
+}
+
+.animate-fade-up { 
+  animation: fade-up 0.6s ease both; 
+}
+
+.animate-slide-in { 
+  animation: slide-in 0.5s ease both; 
+}
+
 .delay-100 { animation-delay: 0.1s; }
 .delay-200 { animation-delay: 0.2s; }
 .delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
