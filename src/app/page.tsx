@@ -2,29 +2,29 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
 const TRACKS = [
-  { slug: "ai-fundamentals",  label: "01", title: "AI_FUNDAMENTALS",   desc: "Cursor · Copilot · Prompting · Debugging"        },
-  { slug: "cursor-mastery",   label: "02", title: "CURSOR_MASTERY",     desc: "Composer · Agent Mode · Context Engineering"     },
-  { slug: "ship-with-ai",     label: "03", title: "SHIP_WITH_AI",       desc: "Lovable · Replit · v0 · Bolt"                    },
-  { slug: "no-code-builders", label: "04", title: "NO_CODE_BUILDERS",   desc: "Bubble · Webflow · FlutterFlow · Glide"          },
-  { slug: "backend-database", label: "05", title: "BACKEND_DATABASE",   desc: "Airtable · Xano · Supabase · Firebase"          },
-  { slug: "automation",       label: "06", title: "AUTOMATION",          desc: "Zapier · Make · n8n"                             },
-  { slug: "ai-agents-money",  label: "07", title: "AI_AGENTS_REVENUE",  desc: "Voiceflow · Lindy · Stripe · Gumloop"            },
+  { slug: "ai-fundamentals",  title: "AI Fundamentals",   desc: "Master Cursor, Copilot, prompting, and AI-powered debugging" },
+  { slug: "cursor-mastery",   title: "Cursor Mastery",     desc: "Deep dive into Composer, Agent Mode, and context engineering" },
+  { slug: "ship-with-ai",     title: "Ship with AI",       desc: "Build complete apps with Lovable, Replit, v0, and Bolt" },
+  { slug: "no-code-builders", title: "No-Code Builders",   desc: "Create powerful apps with Bubble, Webflow, FlutterFlow, and Glide" },
+  { slug: "backend-database", title: "Backend & Database", desc: "Set up backends with Airtable, Xano, Supabase, and Firebase" },
+  { slug: "automation",       title: "Automation",         desc: "Automate workflows with Zapier, Make, and n8n" },
+  { slug: "ai-agents-money",  title: "AI Agents & Revenue", desc: "Build and monetize AI agents with Voiceflow, Lindy, and Stripe" },
 ];
 
 const STEPS = [
-  { n: "01", title: "WATCH",       desc: "Under 15 minutes. Handpicked for speed — no filler." },
-  { n: "02", title: "READ_NOTES",  desc: "Written summary below every video. Reinforce the key ideas." },
-  { n: "03", title: "TAKE_QUIZ",   desc: "Answer 3–5 questions. Score 60%+ to unlock the next step." },
-  { n: "04", title: "DO_CHALLENGE",desc: "Build something real. XP + streak only unlock when you finish." },
+  { n: "1", title: "Watch", desc: "Concise video lessons under 15 minutes. No filler, just what you need to know." },
+  { n: "2", title: "Read", desc: "Written notes below each video reinforce the key concepts." },
+  { n: "3", title: "Quiz", desc: "Answer 3-5 questions. Score 60%+ to unlock the challenge." },
+  { n: "4", title: "Build", desc: "Complete a real challenge. Earn XP and maintain your streak." },
 ];
 
 const REVIEWS = [
-  { name: "Marcus T.",  role: "Indie hacker",               text: "Finished Cursor Mastery in 3 days. Now shipping features in half the time. The debugging lesson alone was worth it." },
-  { name: "Priya S.",   role: "Freelance developer",        text: "The AI Fundamentals track changed how I write prompts. I used to get garbage output. Now I get what I want first try." },
-  { name: "James O.",   role: "Non-technical founder",      text: "Built my first Bubble app after the No-Code track. It has real users now. Lessons are short, challenges make it stick." },
-  { name: "Sofia R.",   role: "CS student",                 text: "Kept a 21-day streak across three tracks. The XP leaderboard makes it feel like a game — but everything is real skills." },
-  { name: "Arjun M.",   role: "Agency owner",               text: "Went from not knowing n8n to automating my entire client onboarding in a week. Automation track is incredibly well structured." },
-  { name: "Lena K.",    role: "Designer learning to code",  text: "I've tried four other AI coding courses. This is the only one I finished. 15 min lessons + real challenge = the format that works." },
+  { name: "Marcus T.",  role: "Indie hacker",          text: "Finished Cursor Mastery in 3 days. Now shipping features in half the time. The debugging lesson alone was worth it." },
+  { name: "Priya S.",   role: "Freelance developer",   text: "The AI Fundamentals track changed how I write prompts. I used to get garbage output. Now I get what I want first try." },
+  { name: "James O.",   role: "Non-technical founder", text: "Built my first Bubble app after the No-Code track. It has real users now. Lessons are short, challenges make it stick." },
+  { name: "Sofia R.",   role: "CS student",            text: "Kept a 21-day streak across three tracks. The XP leaderboard makes it feel like a game — but everything is real skills." },
+  { name: "Arjun M.",   role: "Agency owner",          text: "Went from not knowing n8n to automating my entire client onboarding in a week. Automation track is incredibly well structured." },
+  { name: "Lena K.",    role: "Designer learning to code", text: "I've tried four other AI coding courses. This is the only one I finished. 15 min lessons + real challenge = the format that works." },
 ];
 
 export default async function HomePage() {
@@ -32,127 +32,106 @@ export default async function HomePage() {
   const { data: { user } } = await supabase.auth.getUser();
 
   return (
-    <div className="min-h-screen" style={{ background: "#000" }}>
+    <div className="relative min-h-screen overflow-hidden">
+      
+      {/* Animated background gradients */}
+      <div className="fixed inset-0 -z-10">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-pulse" 
+          style={{ animationDuration: '4s' }} />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/3 rounded-full blur-3xl animate-pulse" 
+          style={{ animationDuration: '6s', animationDelay: '1s' }} />
+      </div>
 
-      {/* ── HERO ──────────────────────────────────────────────── */}
-      <section className="px-6 pt-24 pb-20">
-        <div className="mx-auto max-w-4xl">
-
-          {/* System boot text */}
-          <div className="mb-8 font-mono text-xs" style={{ color: "var(--muted)" }}>
-            <p>&gt; SYSTEM: SPEED_RUN_CODE_v2.0</p>
-            <p>&gt; STATUS: ONLINE</p>
-            <p>&gt; ACCESS: FREE</p>
-          </div>
-
-          {/* Main headline */}
-          <h1 className="mb-6 font-bold leading-none tracking-tight"
-            style={{ fontSize: "clamp(2.8rem, 7vw, 6rem)", color: "var(--accent)" }}>
-            <span className="neon-glow">GET UNSTUCK.</span>
+      {/* Hero */}
+      <section className="px-6 pt-20 pb-16">
+        <div className="mx-auto max-w-5xl">
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight animate-fade-up">
+            Master AI-powered
             <br />
-            <span style={{ color: "var(--foreground)" }}>LEVEL UP FAST.</span>
+            <span className="text-muted">development in days</span>
           </h1>
 
-          <p className="mb-10 max-w-xl text-sm leading-relaxed" style={{ color: "var(--muted)", lineHeight: 1.8 }}>
-            44 lessons · 7 tracks · From your first AI prompt to shipping a real product with payments.
-            <br />
-            No fluff. No filler. No credit card.
+          <p className="text-lg text-muted mb-8 max-w-2xl leading-relaxed animate-fade-up delay-100">
+            44 hands-on lessons across 7 tracks. From your first AI prompt to shipping real products with payments.
           </p>
 
-          {/* Stats row */}
-          <div className="mb-10 flex gap-10">
-            {[{ v: "44", l: "LESSONS" }, { v: "7", l: "TRACKS" }, { v: "FREE", l: "FOREVER" }].map((s) => (
-              <div key={s.l}>
-                <p className="text-2xl font-bold neon-text">{s.v}</p>
-                <p className="text-xs" style={{ color: "var(--muted)" }}>{s.l}</p>
-              </div>
-            ))}
+          <div className="flex gap-6 mb-12 animate-fade-up delay-200">
+            <div>
+              <p className="text-3xl font-bold">44</p>
+              <p className="text-sm text-muted">Lessons</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold">7</p>
+              <p className="text-sm text-muted">Tracks</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold">Free</p>
+              <p className="text-sm text-muted">Forever</p>
+            </div>
           </div>
 
-          {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-wrap gap-4 animate-fade-up delay-300">
             {user ? (
-              <Link href="/dashboard" className="btn-matrix rounded-lg px-8 py-3 text-sm inline-block">
-                CONTINUE_LEARNING →
+              <Link href="/dashboard" 
+                className="bg-foreground text-background px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
+                Continue learning →
               </Link>
             ) : (
-              <Link href="/login" className="btn-matrix rounded-lg px-8 py-3 text-sm inline-block">
-                START_FREE →
+              <Link href="/login" 
+                className="bg-foreground text-background px-8 py-3 rounded-lg font-semibold hover:opacity-90 transition-opacity">
+                Start for free →
               </Link>
             )}
-            <Link href="/tracks" className="btn-matrix-ghost rounded-lg px-8 py-3 text-sm inline-block">
-              BROWSE_TRACKS
+            <Link href="/tracks" 
+              className="border border-card-border px-8 py-3 rounded-lg font-semibold hover:border-foreground transition-colors">
+              Browse tracks
             </Link>
           </div>
-
         </div>
       </section>
 
-      {/* ── DIVIDER ──────────────────────────────────────────── */}
-      <div style={{ borderTop: "1px solid var(--card-border)", marginBottom: 0 }} />
+      {/* Tracks */}
+      <section className="px-6 py-16 bg-card/30">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="text-3xl font-bold mb-8">All tracks</h2>
 
-      {/* ── TRACKS ───────────────────────────────────────────── */}
-      <section className="px-6 py-20">
-        <div className="mx-auto max-w-4xl">
-
-          <div className="mb-10">
-            <p className="text-xs mb-2" style={{ color: "var(--muted)" }}>&gt; LOADING CURRICULUM...</p>
-            <h2 className="text-2xl font-bold neon-text tracking-widest">THE_TRACKS</h2>
-          </div>
-
-          <div className="space-y-2">
-            {TRACKS.map((track) => (
+          <div className="grid gap-4">
+            {TRACKS.map((track, i) => (
               <Link
                 key={track.slug}
                 href={`/tracks/${track.slug}`}
-                className="flex items-center gap-6 rounded-lg border p-4 transition-all hover:border-[var(--accent)] hover:bg-[var(--card)] hover:shadow-[0_0_15px_rgba(0,255,65,0.15)] group"
-                style={{ borderColor: "var(--card-border)" }}
+                className="group p-5 rounded-lg border border-card-border hover:border-foreground bg-card/50 transition-all hover:bg-card animate-fade-up"
+                style={{ animationDelay: `${i * 50}ms` }}
               >
-                <span className="text-xs font-bold w-6 shrink-0" style={{ color: "var(--muted)" }}>
-                  {track.label}
-                </span>
-                <span className="font-bold text-sm tracking-wider group-hover:neon-text transition-all" style={{ color: "var(--foreground)" }}>
+                <h3 className="font-bold text-lg mb-2 group-hover:text-foreground transition-colors">
                   {track.title}
-                </span>
-                <span className="text-xs ml-auto" style={{ color: "var(--muted)" }}>
+                </h3>
+                <p className="text-muted text-sm">
                   {track.desc}
-                </span>
-                <span className="text-accent text-xs ml-4 shrink-0 opacity-0 group-hover:opacity-100 transition-all">
-                  [ENTER]
-                </span>
+                </p>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── DIVIDER ──────────────────────────────────────────── */}
-      <div style={{ borderTop: "1px solid var(--card-border)" }} />
+      {/* How it works */}
+      <section className="px-6 py-16">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="text-3xl font-bold mb-8">How it works</h2>
 
-      {/* ── HOW IT WORKS ─────────────────────────────────────── */}
-      <section className="px-6 py-20">
-        <div className="mx-auto max-w-4xl">
-
-          <div className="mb-10">
-            <p className="text-xs mb-2" style={{ color: "var(--muted)" }}>&gt; PROCESS_SEQUENCE</p>
-            <h2 className="text-2xl font-bold neon-text tracking-widest">HOW_IT_WORKS</h2>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-4">
-            {STEPS.map((step) => (
-              <div key={step.n}
-                className="matrix-card rounded-lg p-6">
+          <div className="grid md:grid-cols-2 gap-6">
+            {STEPS.map((step, i) => (
+              <div key={step.n} 
+                className="p-6 rounded-lg border border-card-border bg-card/30 animate-fade-up"
+                style={{ animationDelay: `${i * 100}ms` }}>
                 <div className="flex items-start gap-4">
-                  <span className="text-xs font-bold shrink-0 mt-0.5" style={{ color: "var(--muted)" }}>
+                  <div className="w-8 h-8 rounded-full bg-foreground text-background flex items-center justify-center font-bold text-sm shrink-0">
                     {step.n}
-                  </span>
+                  </div>
                   <div>
-                    <p className="font-bold text-sm tracking-widest mb-2" style={{ color: "var(--accent)" }}>
-                      {step.title}
-                    </p>
-                    <p className="text-xs leading-relaxed" style={{ color: "var(--muted)", lineHeight: 1.7 }}>
-                      {step.desc}
-                    </p>
+                    <h3 className="font-bold text-lg mb-2">{step.title}</h3>
+                    <p className="text-muted text-sm leading-relaxed">{step.desc}</p>
                   </div>
                 </div>
               </div>
@@ -161,33 +140,27 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── DIVIDER ──────────────────────────────────────────── */}
-      <div style={{ borderTop: "1px solid var(--card-border)" }} />
+      {/* Reviews */}
+      <section className="px-6 py-16 bg-card/30">
+        <div className="mx-auto max-w-5xl">
+          <h2 className="text-3xl font-bold mb-8">What people are saying</h2>
 
-      {/* ── REVIEWS ──────────────────────────────────────────── */}
-      <section className="px-6 py-20">
-        <div className="mx-auto max-w-4xl">
-
-          <div className="mb-10">
-            <p className="text-xs mb-2" style={{ color: "var(--muted)" }}>&gt; USER_LOGS</p>
-            <h2 className="text-2xl font-bold neon-text tracking-widest">WHAT_THEY_SAY</h2>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {REVIEWS.map((r) => (
-              <div key={r.name} className="matrix-card rounded-lg p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-7 h-7 rounded-sm flex items-center justify-center text-xs font-bold shrink-0"
-                    style={{ background: "var(--card-border)", color: "var(--accent)", border: "1px solid var(--card-border)" }}>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {REVIEWS.map((r, i) => (
+              <div key={r.name} 
+                className="p-6 rounded-lg border border-card-border bg-card/50 animate-fade-up"
+                style={{ animationDelay: `${i * 80}ms` }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-card-border flex items-center justify-center font-bold">
                     {r.name.charAt(0)}
                   </div>
                   <div>
-                    <p className="text-xs font-bold" style={{ color: "var(--foreground)" }}>{r.name}</p>
-                    <p className="text-xs" style={{ color: "var(--muted)" }}>{r.role}</p>
+                    <p className="font-semibold text-sm">{r.name}</p>
+                    <p className="text-xs text-muted">{r.role}</p>
                   </div>
                 </div>
-                <p className="text-xs leading-relaxed" style={{ color: "var(--muted)", lineHeight: 1.7 }}>
-                  &ldquo;{r.text}&rdquo;
+                <p className="text-sm text-muted leading-relaxed">
+                  "{r.text}"
                 </p>
               </div>
             ))}
@@ -195,26 +168,24 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ── DIVIDER ──────────────────────────────────────────── */}
-      <div style={{ borderTop: "1px solid var(--card-border)" }} />
-
-      {/* ── CTA ──────────────────────────────────────────────── */}
-      <section className="px-6 py-24 text-center">
+      {/* Final CTA */}
+      <section className="px-6 py-20 text-center">
         <div className="mx-auto max-w-2xl">
-          <p className="text-xs mb-4" style={{ color: "var(--muted)" }}>&gt; READY_TO_BEGIN?</p>
-          <h2 className="text-4xl font-bold mb-6 neon-glow tracking-widest">
-            START_YOUR_RUN
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 animate-fade-up">
+            Ready to start?
           </h2>
-          <p className="text-sm mb-10" style={{ color: "var(--muted)" }}>
-            Free. No credit card. No fluff. Just skills.
+          <p className="text-lg text-muted mb-8 animate-fade-up delay-100">
+            Free forever. No credit card required. Start learning in 30 seconds.
           </p>
           {user ? (
-            <Link href="/dashboard" className="btn-matrix rounded-lg px-12 py-4 text-sm inline-block">
-              GO_TO_DASHBOARD →
+            <Link href="/dashboard" 
+              className="bg-foreground text-background px-10 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity inline-block animate-fade-up delay-200">
+              Go to dashboard →
             </Link>
           ) : (
-            <Link href="/login" className="btn-matrix rounded-lg px-12 py-4 text-sm inline-block">
-              CREATE_ACCOUNT →
+            <Link href="/login" 
+              className="bg-foreground text-background px-10 py-4 rounded-lg font-semibold text-lg hover:opacity-90 transition-opacity inline-block animate-fade-up delay-200">
+              Create account →
             </Link>
           )}
         </div>
